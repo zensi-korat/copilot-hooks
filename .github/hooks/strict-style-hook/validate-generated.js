@@ -69,14 +69,21 @@ function checkFeatureFirstPage(filePath, content) {
 
   const violations = [];
 
-  // Detect inline JSX element trees (multiple JSX children in a return)
-  const hasMultipleJsxElements = /<(?!\/)[A-Z][A-Za-z].*>[\s\S]*<(?!\/)[A-Z][A-Za-z].*>/m.test(
-    content
-  );
-  if (hasMultipleJsxElements) {
-    violations.push(
-      `  Page file contains multiple JSX elements.\n    Pages must be thin wrappers: import and render only the feature component.\n    See .github/copilot-instructions.md — Feature-First Pages rule.`
-    );
+  // Detect multiple sibling JSX elements in a return statement.
+  // Strategy: find the return block, then count top-level JSX opening tags (capital letter).
+  // We look for two or more sibling JSX elements that are not nested inside a prop expression.
+  const returnMatch = content.match(/\breturn\s*\(\s*([\s\S]*?)\s*\)\s*;/);
+  if (returnMatch) {
+    const returnBody = returnMatch[1];
+    // Strip prop-expression JSX: replace `={<...>}` blocks so they don't count as siblings
+    const stripped = returnBody.replace(/=\{<[^}]*>\}/g, "");
+    // Count distinct top-level JSX opening tags (uppercase component names only)
+    const topLevelTags = stripped.match(/<[A-Z][A-Za-z0-9]*/g) || [];
+    if (topLevelTags.length > 1) {
+      violations.push(
+        `  Page file contains multiple JSX elements.\n    Pages must be thin wrappers: import and render only the feature component.\n    See .github/copilot-instructions.md — Feature-First Pages rule.`
+      );
+    }
   }
 
   // Detect logic (useState, useEffect, fetch, etc.) directly in page files
@@ -126,8 +133,8 @@ function checkCnUtility(filePath, content) {
         `  Line ${idx + 1}: template literal used for className — use cn() from @/lib/utils instead.`
       );
     }
-    // Detect string concatenation: className={"base " + ...}
-    if (/className=\{["'][^"']*["']\s*\+/.test(line)) {
+    // Detect string concatenation: className={"base " + ...} or className={variable + "extra"}
+    if (/className=\{[^}]*\+/.test(line) && !/className=\{`/.test(line)) {
       violations.push(
         `  Line ${idx + 1}: string concatenation used for className — use cn() from @/lib/utils instead.`
       );
@@ -148,8 +155,9 @@ function checkFormFieldComponents(filePath, content) {
   const hasForm = /<form[\s>]|<Form[\s>]/.test(content);
   if (!hasForm) return [];
 
-  // Check for direct Label import instead of FieldLabel
-  if (/import[^;]*\bLabel\b[^;]*from\s+["']@\/components\/ui\/label["']/.test(content)) {
+  // Check for direct Label import instead of FieldLabel.
+  // Use the `s` (dotAll) flag to handle multi-line import statements.
+  if (/import[^;]*\bLabel\b[^;]*from\s+["']@\/components\/ui\/label["']/s.test(content)) {
     violations.push(
       `  Form file imports Label directly — use FieldLabel from @/components/ui/field instead.`
     );
@@ -178,11 +186,14 @@ function checkAlphabeticalExports(filePath, content) {
 
   if (exportLines.length < 2) return [];
 
-  // Extract the first exported name from each line for ordering comparison
+  // Extract the first exported name from each line for ordering comparison.
+  // For `export * from "./button"` — strip extension and use the basename.
   const getFirstName = (line) => {
-    const match = line.match(/export\s+\{\s*([A-Za-z_$][A-Za-z0-9_$]*)/) ||
-      line.match(/export\s+\*\s+from\s+["'].*\/([A-Za-z_$][A-Za-z0-9_$.-]*)["']/);
-    return match ? match[1].toLowerCase() : line.trim().toLowerCase();
+    const namedMatch = line.match(/export\s+\{\s*([A-Za-z_$][A-Za-z0-9_$]*)/);
+    if (namedMatch) return namedMatch[1].toLowerCase();
+    const wildcardMatch = line.match(/export\s+\*\s+from\s+["'].*\/([A-Za-z_$][A-Za-z0-9_$-]*)(?:\.[^"']*)?["']/);
+    if (wildcardMatch) return wildcardMatch[1].toLowerCase();
+    return line.trim().toLowerCase();
   };
 
   const names = exportLines.map(getFirstName);
@@ -215,12 +226,12 @@ function checkIconNamingConvention(filePath, content) {
 
   if (!fileName.startsWith("Icon")) {
     violations.push(
-      `  Icon file "${fileName}" does not follow the IconName naming convention.\n    Rename to Icon${fileName}.tsx and update the barrel export.`
+      `  Icon file "${fileName}" does not follow the IconName naming convention.\n    Rename to "Icon${fileName}" (e.g. ${fileName}.tsx → Icon${fileName}.tsx) and update the barrel export.`
     );
   }
 
-  // Must use SVGProps<SVGSVGElement>
-  if (!content.includes("SVGProps<SVGSVGElement>") && !content.includes("SVGProps")) {
+  // Must use SVGProps<SVGSVGElement> as a type annotation (not just a comment mention)
+  if (!/SVGProps<SVGSVGElement>/.test(content)) {
     violations.push(
       `  Icon component should use SVGProps<SVGSVGElement> for type safety.\n    See .github/copilot-instructions.md — Creating Icons.`
     );
