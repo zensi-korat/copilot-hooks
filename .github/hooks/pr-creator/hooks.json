@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/pr-creator/create-pr.sh",
+        "cwd": ".",
+        "env": {
+          "PR_BASE_BRANCH": "main",
+          "PR_DRAFT": "false"
+        },
+        "timeoutSec": 60
+      }
+    ]
+  }
+}
