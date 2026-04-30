@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": ".github/hooks/accessibility-scanner/check_accessibility_post.sh",
+        "timeout": 30
+      }
+    ]
+  }
+}
