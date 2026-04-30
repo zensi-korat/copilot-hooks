@@ -1,0 +1,15 @@
+{
+  "name": "strict-style-enforcer",
+  "description": "Block or warn on generated code that uses arbitrary values, hex colors, hardcoded typography, or unsorted/duplicated classes. Auto-fixes static className strings (dedupe + sort). Enforced for all Copilot-generated code.",
+  "applyTo": ["**/*"],
+  "trigger": "PreWrite",
+  "when": ["CodeGeneration", "CopilotGenerated"],
+  "mode": "warn",
+  "script": ".github/hooks/validate-generated.sh",
+  "options": {
+    "enforceVariableColorsOnly": true,
+    "enforceTypographyTokens": true,
+    "autoFixClassStrings": true,
+    "scanPathsWhenNoArgs": ["src/**/*.{ts,tsx,js,jsx,css,scss}"]
+  }
+}
