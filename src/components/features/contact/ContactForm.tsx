@@ -24,33 +24,29 @@ export function ContactForm({ className, ...props }: ContactFormProps) {
                     <FieldLabel htmlFor="firstName">First Name *</FieldLabel>
                     <Input id="firstName" placeholder="John" required />
                   </Field>
-
                   <Field>
                     <FieldLabel htmlFor="lastName">Last Name *</FieldLabel>
                     <Input id="lastName" placeholder="Doe" required />
                   </Field>
                 </div>
-
                 <Field>
                   <FieldLabel htmlFor="email">Email *</FieldLabel>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="john.doe@example.com"
+                    placeholder="john@example.com"
                     required
                   />
                 </Field>
-
                 <Field>
                   <FieldLabel htmlFor="subject">Subject *</FieldLabel>
                   <Input id="subject" placeholder="How can we help?" required />
                 </Field>
-
                 <Field>
                   <FieldLabel htmlFor="message">Message *</FieldLabel>
                   <Textarea
                     id="message"
-                    placeholder="Tell us more about your inquiry..."
+                    placeholder="Your message..."
                     className="min-h-[120px] resize-none"
                     required
                   />
@@ -58,9 +54,8 @@ export function ContactForm({ className, ...props }: ContactFormProps) {
               </FieldGroup>
             </FieldSet>
             <Field orientation="horizontal">
-              <Button type="submit" className="w-full md:w-auto">
-                Send Message
-              </Button>
+              <Button type="submit">Send Message</Button>
+              <Button type="reset">Clear</Button>
             </Field>
           </FieldGroup>
         </form>

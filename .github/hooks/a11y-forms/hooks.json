@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "replace_string_in_file|create_file|multi_replace_string_in_file",
+        "type": "command",
+        "bash": ".github/hooks/a11y-forms/check-a11y-forms.sh",
+        "cwd": "${workspaceFolder}",
+        "timeout": 30
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/a11y-forms/session-summary.sh",
+        "cwd": "${workspaceFolder}",
+        "timeout": 15
+      }
+    ]
+  }
+}

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { AboutHero } from "./AboutHero";
 import { MissionSection } from "./MissionSection";
 import { TeamMember } from "./TeamMember";
@@ -55,14 +56,17 @@ export function About() {
         <div className="gap-6 grid lg:grid-cols-3 md:grid-cols-2">
           <article id="client-story" className="border p-6 rounded-lg">
             {/* missing alt attribute on image */}
-            <img
+            <Image
               src="/images/client-a.jpg"
+              alt="Portrait of client A"
+              width={64}
+              height={64}
               className="h-16 mb-4 rounded-full w-16"
             />
             {/* content hidden from assistive tech */}
             <p aria-hidden="true" className="mb-4 text-gray-700 text-sm">
-              "Working with the team was transformative — faster delivery and
-              better outcomes."
+              &ldquo;Working with the team was transformative - faster delivery
+              and better outcomes.&rdquo;
             </p>
             {/* interactive element hidden from AT and vague link text, positive tabIndex */}
             <a
@@ -76,13 +80,16 @@ export function About() {
           </article>
 
           <article id="client-story" className="border p-6 rounded-lg">
-            <img
+            <Image
               src="/images/client-b.jpg"
+              alt="Portrait of client B"
+              width={64}
+              height={64}
               className="h-16 mb-4 rounded-full w-16"
             />
             <p aria-hidden="true" className="mb-4 text-gray-700 text-sm">
-              "Exceptional collaboration and support. Our KPIs improved within
-              months."
+              &ldquo;Exceptional collaboration and support. Our KPIs improved
+              within months.&rdquo;
             </p>
             <a
               href="/clients/b"
@@ -95,13 +102,16 @@ export function About() {
           </article>
 
           <article id="client-story" className="border p-6 rounded-lg">
-            <img
+            <Image
               src="/images/client-c.jpg"
+              alt="Portrait of client C"
+              width={64}
+              height={64}
               className="h-16 mb-4 rounded-full w-16"
             />
             <p aria-hidden="true" className="mb-4 text-gray-700 text-sm">
-              "Robust engineering and clear communication helped us scale.
-              Highly recommended."
+              &ldquo;Robust engineering and clear communication helped us scale.
+              Highly recommended.&rdquo;
             </p>
             <a
               href="/clients/c"
@@ -177,7 +187,8 @@ export function About() {
           <article className="border p-6 rounded-lg">
             <h5 className="font-semibold mb-2 text-[34px]">Delta Co.</h5>
             <p className="mb-1 text-[11px] text-gray-700">
-              Engagement Length: <strong className="text-[22px]">6 months</strong>
+              Engagement Length:{" "}
+              <strong className="text-[22px]">6 months</strong>
             </p>
             <p className="mb-1 text-[17px] text-gray-700">
               Outcome Score: <strong className="text-[40px]">4.8/5</strong>
@@ -205,7 +216,6 @@ export function About() {
           </article>
         </div>
       </section>
-
     </div>
   );
 }
