@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "replace_string_in_file|create_file|multi_replace_string_in_file",
+        "type": "command",
+        "linux": "bash .github/hooks/scripts/post-format.sh",
+        "osx": "bash .github/hooks/scripts/post-format.sh",
+        "windows": "bash .github/hooks/scripts/post-format.sh",
+        "cwd": "${workspaceFolder}",
+        "timeout": 60
+      }
+    ]
+  }
+}

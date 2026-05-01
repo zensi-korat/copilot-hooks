@@ -11,6 +11,7 @@ import re
 import json
 import os
 from pathlib import Path
+from datetime import datetime
 
 SESSION_LOG = Path(__file__).parent / "session.log"
 
@@ -134,10 +135,20 @@ def check_and_fix_file(filepath: str):
 
 
 def main():
+    # Log execution start
+    debug_log = Path.home() / ".copilot-hooks-debug.log"
+    with open(debug_log, "a", encoding="utf-8") as f:
+        f.write(f"[{__file__}] Python script started. Args: {sys.argv[1:]}\n")
+
     files = [f for f in sys.argv[1:]
              if f.endswith((".tsx", ".jsx")) and os.path.isfile(f)]
 
+    with open(debug_log, "a", encoding="utf-8") as f:
+        f.write(f"[{__file__}] Files to check: {files}\n")
+
     if not files:
+        with open(debug_log, "a", encoding="utf-8") as f:
+            f.write(f"[{__file__}] No files to check, exiting.\n")
         print(json.dumps({"continue": True}))
         return
 
@@ -146,20 +157,31 @@ def main():
     total_fixes = 0
 
     for fp in files:
+        with open(debug_log, "a", encoding="utf-8") as f:
+            f.write(f"[{__file__}] Checking file: {fp}\n")
         errs, warns, fixes = check_and_fix_file(fp)
         all_errors.extend(errs)
         all_warnings.extend(warns)
         total_fixes += fixes
+        with open(debug_log, "a", encoding="utf-8") as f:
+            f.write(f"[{__file__}] File {fp}: {len(errs)} errors, {len(warns)} warnings, {fixes} fixes\n")
 
     # ── Append to session log ─────────────────────────────────────────────
     record = {
+        "timestamp": datetime.now().isoformat(),
         "errors":   all_errors,
         "warnings": all_warnings,
         "fixes":    total_fixes,
         "files":    files,
     }
-    with open(SESSION_LOG, "a", encoding="utf-8") as f:
-        f.write(json.dumps(record) + "\n")
+    try:
+        with open(SESSION_LOG, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record) + "\n")
+        with open(debug_log, "a", encoding="utf-8") as f:
+            f.write(f"[{__file__}] Successfully wrote to session.log: {SESSION_LOG}\n")
+    except Exception as e:
+        with open(debug_log, "a", encoding="utf-8") as f:
+            f.write(f"[{__file__}] ERROR writing to session.log: {e}\n")
 
     # ── Build inline agent message ────────────────────────────────────────
     real_warnings = [w for w in all_warnings if w["type"] == "warning"]

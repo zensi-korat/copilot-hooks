@@ -1,6 +1,6 @@
 {
   "hooks": {
-    "PostToolUse": [
+    "postToolUse": [
       {
         "matcher": "replace_string_in_file|create_file|multi_replace_string_in_file",
         "type": "command",
@@ -9,7 +9,7 @@
         "timeout": 30
       }
     ],
-    "Stop": [
+    "stop": [
       {
         "type": "command",
         "bash": ".github/hooks/a11y-forms/session-summary.sh",
