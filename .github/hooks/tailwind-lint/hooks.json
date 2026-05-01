@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "replace_string_in_file|create_file|multi_replace_string_in_file",
+        "type": "command",
+        "bash": ".github/hooks/tailwind-lint/check-tailwind.sh",
+        "cwd": "${workspaceFolder}",
+        "timeout": 30
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/tailwind-lint/session-summary.sh",
+        "cwd": "${workspaceFolder}",
+        "timeout": 15
+      }
+    ]
+  }
+}

@@ -4,6 +4,12 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  "github.copilot.chat.agent.hooks": [
+    ".github/hooks/a11y-forms/hooks.json",
+    ".github/hooks/component-reuse/hooks.json",
+    ".github/hooks/tailwind-lint/hooks.json",
+    ".github/hooks/tool-guardian/hooks.json"
+  ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "[typescriptreact]": {

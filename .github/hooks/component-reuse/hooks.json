@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "replace_string_in_file|create_file|multi_replace_string_in_file|apply_patch",
+        "type": "command",
+        "bash": ".github/hooks/component-reuse/check-component-reuse.sh",
+        "cwd": "${workspaceFolder}",
+        "timeout": 30
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "bash": ".github/hooks/component-reuse/session-summary.sh",
+        "cwd": "${workspaceFolder}",
+        "timeout": 15
+      }
+    ]
+  }
+}
